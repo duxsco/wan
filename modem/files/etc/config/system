@@ -1,0 +1,30 @@
+config system
+	# "ttylogin" with "1" set prompts you for a password
+	# over serial port. Only after setting a password,
+	# you may change it to 1.
+	option ttylogin '0'
+	option hostname 'avm'
+
+config led 'led_wifi'
+	option name 'wifi'
+	option sysfs 'fritz3370:green:wlan'
+	option trigger 'phy0tpt'
+
+config led 'led_dsl'
+	option name 'dsl'
+	option sysfs 'fritz3370:green:dsl'
+	option default '0'
+
+config led 'led_internet'
+	option name 'internet'
+	option sysfs 'fritz3370:green:info'
+	option trigger 'netdev'
+	option mode 'link tx rx'
+	option dev 'pppoe-wan'
+
+config led 'led_lan'
+	option name 'LAN'
+	option sysfs 'fritz3370:green:lan'
+	option trigger 'switch0'
+	option port_mask '0x17'
+
