@@ -11,7 +11,7 @@ sha256sums.asc
 vr9-B-dsl.bin
 ```
 
-Above files are downloaded from [openwrt.org](https://downloads.openwrt.org/releases/19.07.7/targets/lantiq/xrx200/) and `vr9-B-dsl.bin` is extracted with the help of [xdarklight](https://xdarklight.github.io/lantiq-xdsl-firmware-info/):
+Above files are downloaded from [openwrt.org](https://downloads.openwrt.org/releases/19.07.7/targets/lantiq/xrx200/), and `vr9-B-dsl.bin` is extracted with the help of [xdarklight](https://xdarklight.github.io/lantiq-xdsl-firmware-info/):
 
 ![Lantiq firmware](lantiq_firmware.png)
 
@@ -89,7 +89,7 @@ Connection to 192.168.1.1 closed by remote host.
 Connection to 192.168.1.1 closed.
 ```
 
-... and create the package list again:
+... and create the package list without dependencies again:
 
 ```bash
 remote $ opkg list-installed | awk '{print $1}' | while read I; do if [ $(opkg whatdepends "$I" | wc -l) -eq 3 ]; then echo "$I"; fi; done
@@ -183,7 +183,7 @@ passwd: password for root changed by root
 remote $ sed -i "s/option ttylogin.*/option ttylogin '1'/" /etc/config/system # to enforce prompt for root password over serial port
 ```
 
-And here is my bare minimum package list:
+And, here is my bare minimum package list without dependencies:
 
 ```bash
 remote $ opkg list-installed | awk '{print $1}' | while read I; do if [ $(opkg whatdepends "$I" | wc -l) -eq 3 ]; then echo "$I"; fi; done

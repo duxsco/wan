@@ -9,7 +9,7 @@ I have the following hardware in use:
 In the following, I show the steps taken to setup above devices. Adjust accordingly if you use other hardware:
 
   - ... as modem with [Lantiq SoC](https://openwrt.org/docs/techref/hardware/soc/soc.lantiq), preferably with an up-to-date [firmware](https://xdarklight.github.io/lantiq-xdsl-firmware-info/)
-  - ... as the high-performing gateway router, see [OpenSSL](https://openwrt.org/docs/guide-user/perf_and_log/benchmark.openssl) and [VPN](https://openwrt.org/toh/views/toh_vpn_performance) benchmarks. Beware that wireguard doesn't make use of AES-NI due to its [primitives](https://www.wireguard.com/protocol/).
+  - ... as the high-performing gateway router, see [OpenSSL](https://openwrt.org/docs/guide-user/perf_and_log/benchmark.openssl) and [VPN](https://openwrt.org/toh/views/toh_vpn_performance) benchmarks. Beware that wireguard doesn't make use of AES-NI due to its [protocols and primitives](https://www.wireguard.com/protocol/).
 
 ## Beware
 
@@ -21,7 +21,7 @@ Commands run locally (on my laptop) are shown as:
 local $ echo local_command
 ```
 
-whereas those run on my modem, router and vServer are shown as:
+... whereas those run on my modem, router and vServer are shown as:
 
 ```bash
 remote $ echo remote_command
