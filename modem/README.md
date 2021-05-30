@@ -131,7 +131,7 @@ wpad-basic
 
 **Now, you have an overview of what packages above two images come with.**
 
-As already mentioned, I use a minimalistic image which I preconfigure with below files and folders. My `files` folder (without `vr9-B-dsl.bin` due to copyright) is stored in this repo at `modem/files`. I recommend comparing the files in `files/etc/config` with those pulled from your modem running OpenWrt's Image Builder image w/o modifications of previous chapter. Read my comments within the config files and make sure to understand my changes with the help of the official OpenWrt docs.
+As already mentioned, I use a minimalistic image which I preconfigure with below files and folders. My `files` folder (without `vr9-B-dsl.bin` due to copyright) is stored in this repo at `modem/files`. I recommend comparing the files in `files/etc/config` with those pulled from your modem running OpenWrt's [Image Builder sysupgrade .bin w/o modifications](#image-builder-sysupgrade-bin-wo-modifications). Read my comments within the config files and make sure to understand my changes with the help of the official OpenWrt docs.
 
 Make sure that correct permissions are set with `chmod`:
 
