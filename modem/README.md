@@ -13,7 +13,7 @@ vr9-B-dsl.bin
 
 Above files are downloaded from [openwrt.org](https://downloads.openwrt.org/releases/19.07.7/targets/lantiq/xrx200/) and `vr9-B-dsl.bin` is extracted with the help of [xdarklight](https://xdarklight.github.io/lantiq-xdsl-firmware-info/):
 
-![Lantiq firmware](modem/lantiq_firmware.jpg)
+![Lantiq firmware](lantiq_firmware.jpg)
 
 ## Official sysupgrade .bin
 
