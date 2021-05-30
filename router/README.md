@@ -24,7 +24,7 @@ Connection to 192.168.0.1 closed by remote host.
 Connection to 192.168.0.1 closed.
 ```
 
-..., ssh into your modem after reboot with `ssh root@192.168.1.1` and list packages without any dependencies:
+..., ssh into your router after reboot with `ssh root@192.168.1.1` and list packages without any dependencies:
 
 ```bash
 remote $ opkg list-installed | awk '{print $1}' | while read I; do if [ $(opkg whatdepends "$I" | wc -l) -eq 3 ]; then echo "$I"; fi; done
@@ -74,7 +74,7 @@ local $ scp bin/targets/ipq806x/generic/openwrt-19.07.7-ipq806x-generic-tplink_c
 local $ grep "openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin" bin/targets/ipq806x/generic/sha256sums | sed 's#*# /tmp/#' | ssh root@192.168.1.1 "dd of=/tmp/sha256.txt"
 ```
 
-..., flash your modem:
+..., flash your router:
 
 ```bash
 remote $ sha256sum -c /tmp/sha256.txt 
