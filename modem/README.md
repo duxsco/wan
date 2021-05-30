@@ -3,7 +3,7 @@
 I prefer keeping the modem as stupid as possible to provide a small attack surface. Thus, I am building my own firmware with OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder).
 
 ```bash
-local $ ls -1 
+local $ ls -1
 openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin
 openwrt-imagebuilder-19.07.7-lantiq-xrx200.Linux-x86_64.tar.xz
 sha256sums
@@ -29,8 +29,7 @@ local $ make tools
 Flash the official sysupgrade .bin:
 
 ```bash
-remote $ sha256sum /tmp/openwrt-19.07.7-lantiq-xrx200-avm_fritz
-3370-rev2-hynix-squashfs-sysupgrade.bin | grep cc79df99be39ba4ff675aaf8f60e8cedb4eef4373ec2fc5b3e803bc5cfe15652
+remote $ sha256sum /tmp/openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin | grep cc79df99be39ba4ff675aaf8f60e8cedb4eef4373ec2fc5b3e803bc5cfe15652
 remote $ sysupgrade -n -v /tmp/openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin 
 Commencing upgrade. Closing all shell sessions.
 Connection to 192.168.0.254 closed by remote host.
@@ -76,7 +75,7 @@ wpad-basic
 
 ## Image Builder sysupgrade .bin w/o modifications
 
-Use the OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder) ...:
+Use OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder) ...:
 
 ```bash
 local $ tar xvf openwrt-imagebuilder-19.07.7-lantiq-xrx200.Linux-x86_64.tar.xz; echo $?
@@ -156,7 +155,7 @@ drwxr-xr-x  files/lib/firmware
 -r--r--r--  files/lib/firmware/vr9-B-dsl.bin
 ```
 
-While building the image with OpenWrt's Image Builder, you have to explicitly exclude the packages you don't want to have. I create my bare minimum image as follows:
+While building the image with OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder), you have to explicitly exclude/include packages from the [standard set](#image-builder-sysupgrade-bin-wo-modifications). I create my image with above customisations as follows:
 
 ```bash
 local $ tar xvf openwrt-imagebuilder-19.07.7-lantiq-xrx200.Linux-x86_64.tar.xz; echo $?
@@ -167,7 +166,7 @@ local $ scp bin/targets/lantiq/xrx200/openwrt-19.07.7-lantiq-xrx200-avm_fritz337
 local $ grep "openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin" bin/targets/lantiq/xrx200/sha256sums | sed 's#*# /tmp/#' | ssh root@192.168.1.1 "dd of=/tmp/sha256.txt"
 ```
 
-You can get some info on a certain package at `https://openwrt.org/packages/pkgdata/<PACKAGE_NAME>` (e.g. https://openwrt.org/packages/pkgdata/urngd).
+You can get some info on a certain package at `https://openwrt.org/packages/pkgdata/<PACKAGE_NAME>` (e.g. https://openwrt.org/packages/pkgdata/urngd) or via [package table](https://openwrt.org/packages/table/start).
 
 Flash the image:
 
