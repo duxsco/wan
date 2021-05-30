@@ -142,7 +142,6 @@ drwxr-xr-x  files/etc
 drwxr-xr-x  files/etc/config
 -rw-------  files/etc/config/network
 -rw-------  files/etc/config/system
-drwx------  files/etc/dropbear
 drwxr-xr-x  files/lib
 drwxr-xr-x  files/lib/firmware
 -r--r--r--  files/lib/firmware/vr9-B-dsl.bin
