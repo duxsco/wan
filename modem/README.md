@@ -15,6 +15,15 @@ Above files are downloaded from [openwrt.org](https://downloads.openwrt.org/rele
 
 ![Lantiq firmware](lantiq_firmware.png)
 
+In order to get the `unsquashfs4-avm-be` you need to do:
+
+```bash
+local $ git clone https://github.com/Freetz/freetz.git
+local $ cd freetz
+local $ make menuconfig # just save, no modifications required
+local $ make tools
+```
+
 ## Official sysupgrade .bin
 
 Flash the official sysupgrade .bin:
