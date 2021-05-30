@@ -27,4 +27,3 @@ config led 'led_lan'
 	option sysfs 'fritz3370:green:lan'
 	option trigger 'switch0'
 	option port_mask '0x17'
-

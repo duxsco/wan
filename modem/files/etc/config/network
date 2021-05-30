@@ -1,4 +1,3 @@
-
 config interface 'loopback'
 	option ifname 'lo'
 	option proto 'static'
@@ -60,4 +59,3 @@ config switch_vlan
 	# "4" somehow stands for "LAN1" on AVM Fritzbox 3370.
 	option ports '4 6t'
 	option vid '7'
-
