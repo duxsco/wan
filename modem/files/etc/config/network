@@ -4,7 +4,6 @@ config interface 'loopback'
 	option ipaddr '127.0.0.1'
 	option netmask '255.0.0.0'
 
-
 config dsl 'dsl'
 	# Annex J is required for VDSL
 	option annex 'j'
