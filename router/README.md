@@ -288,7 +288,7 @@ uci del unbound.cfg011680.query_min_strict
 
 ### Network ⇨ Interfaces ⇨ LAN
 
-If you change the IP for the LAN interface like I do you need to change the static IP on your working machine accordingly and access the router's web interface available at the new IP within a certain time. Otherwise, the IP settings of the router are reverted.
+If you change the IP of the LAN interface like I do you need to change the static IP on your working machine accordingly and access the router's web interface available at the new IP within a certain time. Otherwise, the IP settings of the router are reverted.
 
 ```
 uci set dhcp.lan=dhcp
