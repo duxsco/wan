@@ -30,7 +30,7 @@ Flash the official sysupgrade .bin:
 
 ```bash
 remote $ sha256sum /tmp/openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin | grep cc79df99be39ba4ff675aaf8f60e8cedb4eef4373ec2fc5b3e803bc5cfe15652
-remote $ sysupgrade -n -v /tmp/openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin 
+remote $ sysupgrade -n -v /tmp/openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin
 Commencing upgrade. Closing all shell sessions.
 Connection to 192.168.0.254 closed by remote host.
 Connection to 192.168.0.254 closed.
@@ -89,7 +89,7 @@ local $ grep "openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sy
 ..., flash your modem:
 
 ```bash
-remote $ sha256sum -c /tmp/sha256.txt 
+remote $ sha256sum -c /tmp/sha256.txt
 /tmp/openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin: OK
 remote $ sysupgrade -n -v /tmp/openwrt-19.07.7-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin
 Commencing upgrade. Closing all shell sessions.
