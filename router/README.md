@@ -664,9 +664,9 @@ uci set firewall.@redirect[-1].dest='lan'
 uci set firewall.@redirect[-1].target='DNAT'
 ```
 
-![FW port forwarding certbot](assets/fw_port_forwarding_smtp_00.png)
+![FW port forwarding smtp](assets/fw_port_forwarding_smtp_00.png)
 
-![FW port forwarding certbot](assets/fw_port_forwarding_smtp_01.png)
+![FW port forwarding smtp](assets/fw_port_forwarding_smtp_01.png)
 
 ```
 uci add firewall redirect # =cfg143837
@@ -682,9 +682,9 @@ uci set firewall.@redirect[-1].dest='lan'
 uci set firewall.@redirect[-1].target='DNAT'
 ```
 
-![FW port forwarding certbot](assets/fw_port_forwarding_imap_00.png)
+![FW port forwarding imap](assets/fw_port_forwarding_imap_00.png)
 
-![FW port forwarding certbot](assets/fw_port_forwarding_imap_01.png)
+![FW port forwarding imap](assets/fw_port_forwarding_imap_01.png)
 
 ```
 uci add firewall redirect # =cfg153837
