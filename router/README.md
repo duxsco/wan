@@ -131,7 +131,7 @@ I build my image using the [package list from the official OpenWrt image](#offic
   - Replace `wpad-basic` with `wpad-openssl` for [WPA3 support](https://openwrt.org/docs/guide-user/network/wifi/basic#encryption_modes).
   - Replace `dnsmasq` with `luci-app-unbound` for DNS. As [dnsmasq also takes care of DHCP over IPv4](https://openwrt.org/docs/guide-user/base-system/dhcp), I need to replace `odhcpd-ipv6only` with `odhcpd` to have DHCP and DHCPv6.
   - Install `luci-app-wireguard` for VPN.
-  - Install packages needed to host your gopass/pass Git repos on usb → raid1 mdadm → ext4
+  - Install packages needed to host your gopass/pass Git repos on usb ⇨ raid1 mdadm ⇨ ext4
 
 While building the image with OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder), you have to explicitly exclude/include packages from the [standard set](#image-builder-sysupgrade-bin-wo-modifications). **I create my image with above customisations as shown in the following code blocks.**
 
@@ -241,7 +241,7 @@ After making changes over the web interface (aka `luci`), click on `Save` and cl
 
 ![Configuration](assets/configuration.png)
 
-### System → System
+### System ⇨ System
 
 ```
 uci del system.ntp.enabled
@@ -260,7 +260,7 @@ uci add_list system.ntp.server='3.de.pool.ntp.org'
 uci set system.ntp.use_dhcp='0'
 ```
 
-### System → Administration
+### System ⇨ Administration
 
 Set a password and enable SSH public key authentication. Beware that dropbear doesn't support ed25519 on OpenWrt 19.07.
 
@@ -270,7 +270,7 @@ uci set dropbear.cfg014dd4.RootPasswordAuth='off'
 uci set dropbear.cfg014dd4.PasswordAuth='off'
 ```
 
-### Services → Recursive DNS
+### Services ⇨ Recursive DNS
 
 ```
 uci set unbound.cfg011680.enabled='1'
@@ -286,7 +286,7 @@ uci del unbound.cfg011680.query_minimize
 uci del unbound.cfg011680.query_min_strict
 ```
 
-### Network → Interfaces → LAN
+### Network ⇨ Interfaces ⇨ LAN
 
 If you change the IP for the LAN interface like I do you need to change the static IP on your working machine accordingly and access the router's web interface available at the new IP within a certain time. Otherwise, the IP settings of the router are reverted.
 
@@ -302,7 +302,7 @@ uci set dhcp.lan.ra_management='1'
 uci set network.lan.ipaddr='192.168.0.1'
 ```
 
-### Network → Interfaces → WAN
+### Network ⇨ Interfaces ⇨ WAN
 
 ```
 uci set network.wan.proto='pppoe'
@@ -314,7 +314,7 @@ uci set network.wan.keepalive='3 5'
 uci set network.wan.password='XXX'
 ```
 
-### Network → Interfaces → WAN6
+### Network ⇨ Interfaces ⇨ WAN6
 
 ```
 uci add_list network.wan6.dns='::1'
@@ -323,7 +323,7 @@ uci set network.wan6.reqaddress='try'
 uci set network.wan6.peerdns='0'
 ```
 
-### Network → Wireless
+### Network ⇨ Wireless
 
 ```
 uci set wireless.radio0.channel='auto'
@@ -362,7 +362,7 @@ remote $ uci commit unbound
 remote $ /etc/init.d/unbound restart
 ```
 
-### Network → Firewall → "General Settings"
+### Network ⇨ Firewall ⇨ "General Settings"
 
 Drop invalid packets:
 
@@ -535,7 +535,7 @@ remote $ ( umask go= && \
 wg genkey | tee /tmp/wg_vserver.key | wg pubkey > /tmp/wg_vserver.pub )
 ```
 
-#### Network → Firewall → "General Settings"
+#### Network ⇨ Firewall ⇨ "General Settings"
 
 A firewall zone needs to be created. I masquerade and **only** enable outgoing traffic.
 
@@ -557,7 +557,7 @@ uci set firewall.@zone[-1].masq='1'
 uci set firewall.@zone[-1].output='ACCEPT'
 ```
 
-#### Network → Interfaces
+#### Network ⇨ Interfaces
 
   1. Click "Add new interface..."
   2. Name your Wireguard VPN, set "Protocol" to "Wireguard VPN" and click "Create Interface"
@@ -588,7 +588,7 @@ uci set network.@wireguard_whitehouse[-1].preshared_key="$(cat /tmp/wg_router.ps
 uci set network.@wireguard_whitehouse[-1].endpoint_host='<PUBLIC STATIC IP OF VSERVER>'
 ```
 
-#### Network → Firewall → "Traffic Rules" (Filter)
+#### Network ⇨ Firewall ⇨ "Traffic Rules" (Filter)
 
 ![FW traffic rule certbot](assets/fw_traffic_rule_certbot_00.png)
 
@@ -644,7 +644,7 @@ uci set firewall.@rule[-1].target='ACCEPT'
 uci set firewall.@rule[-1].family='ipv4'
 ```
 
-#### Network → Firewall → "Port Forwards" (DNAT)
+#### Network ⇨ Firewall ⇨ "Port Forwards" (DNAT)
 
 ![FW port forwarding certbot](assets/fw_port_forwarding_certbot_00.png)
 
@@ -700,7 +700,7 @@ uci set firewall.@redirect[-1].dest='lan'
 uci set firewall.@redirect[-1].target='DNAT'
 ```
 
-#### Network → Firewall → "NAT Rules" (SNAT)
+#### Network ⇨ Firewall ⇨ "NAT Rules" (SNAT)
 
 ![FW nat certbot](assets/fw_nat_certbot.png)
 
@@ -744,7 +744,7 @@ uci set firewall.@nat[-1].snat_ip='192.168.0.1'
 uci set firewall.@nat[-1].src='lan'
 ```
 
-#### Network → Firewall → "Custom Rules" (Reflection)
+#### Network ⇨ Firewall ⇨ "Custom Rules" (Reflection)
 
 Don't forget to set the IP of the vServer:
 
