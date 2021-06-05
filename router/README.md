@@ -539,11 +539,11 @@ wg genkey | tee /tmp/wg_vserver.key | wg pubkey > /tmp/wg_vserver.pub )
 
 A firewall zone needs to be created. I masquerade and **only** enable outgoing traffic.
 
-![firwall zone configuration](assets/fw_zone_00.png)
+![firwall zone configuration](assets/fw_zone_whitehouse_00.png)
 
 Disable IPv6:
 
-![firwall zone configuration](assets/fw_zone_01.png)
+![firwall zone configuration](assets/fw_zone_whitehouse_01.png)
 
 The resulting commands:
 
