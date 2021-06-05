@@ -537,7 +537,7 @@ wg genkey | tee /tmp/wg_vserver.key | wg pubkey > /tmp/wg_vserver.pub )
 
 #### Network ⇨ Firewall ⇨ "General Settings"
 
-A firewall zone needs to be created. I masquerade and **only** enable outgoing traffic.
+A firewall zone needs to be created. I **only** enable outgoing traffic.
 
 ![firwall zone configuration](assets/fw_zone_whitehouse_00.png)
 
@@ -553,7 +553,6 @@ uci set firewall.@zone[-1].name='whitehouse'
 uci set firewall.@zone[-1].family='ipv4'
 uci set firewall.@zone[-1].input='REJECT'
 uci set firewall.@zone[-1].forward='REJECT'
-uci set firewall.@zone[-1].masq='1'
 uci set firewall.@zone[-1].output='ACCEPT'
 ```
 
