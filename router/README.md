@@ -1,10 +1,15 @@
 # Router
 
 [1. Introduction](#introduction)
+
 [2. Official sysupgrade .bin](#official-sysupgrade-bin)
+
 [3. Image Builder sysupgrade .bin w/o modifications](#image-builder-sysupgrade-bin-wo-modifications)
+
 [4. Custom sysupgrade .bin](#custom-sysupgrade-bin)
+
 [5. Basic Configuration](#basic-configuration)
+
 [6. Advanced Configuration](#advanced-configuration)
 
 ## Introduction
