@@ -563,13 +563,13 @@ uci set firewall.@zone[-1].output='ACCEPT'
   2. Name your Wireguard VPN, set "Protocol" to "Wireguard VPN" and click "Create Interface"
   3. Configure as shown in these screenshots:
 
-![wireguard interface](assets/wireguard_00.png)
+![wireguard interface](assets/interface_whitehouse_00.png)
 
-![wireguard interface](assets/wireguard_01.png)
+![wireguard interface](assets/interface_whitehouse_01.png)
 
-![wireguard interface](assets/wireguard_02.png)
+![wireguard interface](assets/interface_whitehouse_02.png)
 
-![wireguard interface](assets/wireguard_03.png)
+![wireguard interface](assets/interface_whitehouse_03.png)
 
 ```
 uci add_list firewall.cfg0fdc81.network='whitehouse'
