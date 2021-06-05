@@ -752,3 +752,98 @@ Don't forget to set the IP of the vServer:
 iptables -t nat -A zone_lan_prerouting  -s 192.168.0.0/24 -d <PUBLIC STATIC IP OF VSERVER> -p tcp -m multiport --dports 50587,50993 -j DNAT --to-destination 192.168.0.2 -m comment --comment "mail reflection"
 iptables -t nat -A zone_lan_postrouting -s 192.168.0.0/24 -d 192.168.0.2    -p tcp -m multiport --dports 50587,50993 -j SNAT --to 192.168.0.1             -m comment --comment "mail reflection"
 ```
+
+### Guest Wifi for Smart-TV
+
+I like to have my Smart-TV in a guest Wifi, separated from my LAN.
+
+#### Network ⇨ Firewall ⇨ "General Settings"
+
+Frist, I create a firewall zone as shown in [Network ⇨ Firewall ⇨ "General Settings"](#network--firewall--general-settings-1). Just replace "whitehouse" with "tv", don't disable IPv6 and allow ingoing traffic:
+
+```
+uci add firewall zone # =cfg19dc81
+uci set firewall.@zone[-1].name='tv'
+uci set firewall.@zone[-1].input='ACCEPT'
+uci set firewall.@zone[-1].forward='REJECT'
+uci set firewall.@zone[-1].output='ACCEPT'
+```
+
+#### Network ⇨ Interfaces
+
+Create the `tv` interface:
+
+![tv interface](assets/interface_tv_00.png)
+
+![tv interface](assets/interface_tv_01.png)
+
+![tv interface](assets/interface_tv_02.png)
+
+![tv interface](assets/interface_tv_03.png)
+
+![tv interface](assets/interface_tv_04.png)
+
+![tv interface](assets/interface_tv_05.png)
+
+```
+uci set dhcp.tv=dhcp
+uci set dhcp.tv.start='100'
+uci set dhcp.tv.leasetime='12h'
+uci set dhcp.tv.limit='150'
+uci set dhcp.tv.interface='tv'
+uci set dhcp.tv.ra='server'
+uci set dhcp.tv.dhcpv6='server'
+uci set dhcp.tv.ra_management='1'
+uci add_list firewall.cfg19dc81.network='tv'
+uci set network.tv=interface
+uci set network.tv.type='bridge'
+uci set network.tv.proto='static'
+uci set network.tv.netmask='255.255.255.0'
+uci set network.tv.ipaddr='192.168.1.1'
+uci set network.tv.ip6assign='60'
+```
+
+Connect to the router via SSH and enable DHCPv4:
+
+```bash
+remote $ uci set dhcp.tv.dhcpv4="server"
+remote $ uci commit dhcp
+remote $ /etc/init.d/odhcpd restart
+```
+
+#### Network ⇨ Wireless
+
+The wireless network needs to be created:
+
+```
+uci set wireless.wifinet2=wifi-iface
+uci set wireless.wifinet2.ssid='tv'
+uci set wireless.wifinet2.encryption='sae-mixed'
+uci set wireless.wifinet2.device='radio0'
+uci set wireless.wifinet2.isolate='1'
+uci set wireless.wifinet2.key='XXX'
+uci set wireless.wifinet2.network='tv'
+uci set wireless.wifinet2.mode='ap'
+uci set wireless.wifinet2.wpa_disable_eapol_key_retries='1'
+uci set wireless.wifinet2.ieee80211w='1'
+uci set wireless.wifinet3=wifi-iface
+uci set wireless.wifinet3.ssid='tv'
+uci set wireless.wifinet3.encryption='sae-mixed'
+uci set wireless.wifinet3.device='radio1'
+uci set wireless.wifinet3.isolate='1'
+uci set wireless.wifinet3.key='XXX'
+uci set wireless.wifinet3.network='tv'
+uci set wireless.wifinet3.mode='ap'
+uci set wireless.wifinet3.wpa_disable_eapol_key_retries='1'
+uci set wireless.wifinet3.ieee80211w='1'
+```
+
+#### Network ⇨ Firewall ⇨ "General Settings"
+
+Finally, I allow traffic to be forwarded from `tv` zone to `wan` zone. For this purpose, edit `tv` zone and set `wan` at `Allow forward to destination zones:`.
+
+```
+uci add firewall forwarding # =cfg1aad58
+uci set firewall.@forwarding[-1].dest='wan'
+uci set firewall.@forwarding[-1].src='tv'
+```
