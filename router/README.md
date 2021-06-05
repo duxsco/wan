@@ -847,3 +847,78 @@ uci add firewall forwarding # =cfg1aad58
 uci set firewall.@forwarding[-1].dest='wan'
 uci set firewall.@forwarding[-1].src='tv'
 ```
+
+### Separate LAN for Webcam
+
+The webcam's base station is connected to the router on port "LAN1" via ethernet. I like to separate this network from LAN via VLAN.
+
+#### Network ⇨ Switch
+
+We need to assign "LAN1" port to a separate VLAN which has port number 3 in below screenshot:
+
+![cam switch](assets/switch.png)
+
+```
+uci add network switch_vlan # =cfg0c1ec7
+uci set network.@switch_vlan[-1].device='switch0'
+uci set network.@switch_vlan[-1].vlan='3'
+uci set network.cfg071ec7.vid='1'
+uci set network.cfg081ec7.ports='0t 5'
+uci set network.cfg081ec7.vid='2'
+uci set network.cfg071ec7.ports='1 2 3 6t'
+uci set network.@switch_vlan[-1].ports='4 6t'
+uci set network.@switch_vlan[-1].vid='3'
+```
+
+#### Network ⇨ Firewall ⇨ "General Settings"
+
+A firewall zone as shown in [Network ⇨ Firewall ⇨ "General Settings"](#network--firewall--general-settings-1) needs to be created. Just replace "whitehouse" with "cam", don't disable IPv6 and allow ingoing traffic:
+
+```
+uci add firewall zone # =cfg1bdc81
+uci set firewall.@zone[-1].input='ACCEPT'
+uci set firewall.@zone[-1].forward='REJECT'
+uci set firewall.@zone[-1].name='cam'
+uci set firewall.@zone[-1].output='ACCEPT'
+```
+
+#### Network ⇨ Interfaces
+
+Create the `cam` interface as shown in [Network ⇨ Interfaces](#network--interfaces-1). But, change the IP address and assign the "LAN1" port to the bridge.
+
+```
+uci set dhcp.cam=dhcp
+uci set dhcp.cam.start='100'
+uci set dhcp.cam.leasetime='12h'
+uci set dhcp.cam.limit='150'
+uci set dhcp.cam.interface='cam'
+uci set dhcp.cam.ra='server'
+uci set dhcp.cam.dhcpv6='server'
+uci set dhcp.cam.ra_management='1'
+uci add_list firewall.cfg1bdc81.network='cam'
+uci set network.cam=interface
+uci set network.cam.proto='static'
+uci set network.cam.ifname='eth1.3'
+uci set network.cam.type='bridge'
+uci set network.cam.netmask='255.255.255.0'
+uci set network.cam.ipaddr='192.168.2.1'
+uci set network.cam.ip6assign='60'
+```
+
+Connect to the router via SSH and enable DHCPv4:
+
+```bash
+remote $ uci set dhcp.cam.dhcpv4="server"
+remote $ uci commit dhcp
+remote $ /etc/init.d/odhcpd restart
+```
+
+#### Network ⇨ Firewall ⇨ "General Settings"
+
+Finally, I allow traffic to be forwarded from `cam` zone to `wan` zone. For this purpose, edit `cam` zone and set `wan` at `Allow forward to destination zones:`.
+
+```
+uci add firewall forwarding # =cfg1cad58
+uci set firewall.@forwarding[-1].dest='wan'
+uci set firewall.@forwarding[-1].src='cam'
+```
