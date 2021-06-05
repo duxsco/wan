@@ -1,5 +1,14 @@
 # Router
 
+[1. Introduction](#introduction)
+[2. Official sysupgrade .bin](#official-sysupgrade-bin)
+[3. Image Builder sysupgrade .bin w/o modifications](#image-builder-sysupgrade-bin-wo-modifications)
+[4. Custom sysupgrade .bin](#custom-sysupgrade-bin)
+[5. Basic Configuration](#basic-configuration)
+[6. Advanced Configuration](#advanced-configuration)
+
+## Introduction
+
 Packages can be installed with `opkg` or over the web interface (aka `luci`) on devices with large storage capacity. In contrast to my modem setup, I don't have the requirement of keeping the image as small as possible. Nevertheless, I still prefer building my own image with OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder), especially with the requirement of replacing DNSMasq with Unbound and enabling WPA3.
 
 ```bash
