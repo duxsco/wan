@@ -26,6 +26,10 @@ sha256sums.asc
 
 Above files are downloaded from [openwrt.org](https://downloads.openwrt.org/releases/21.02.1/targets/ipq806x/generic/).
 
+## Prepare the system
+
+If you don't like to run foreign scripts on your machine you can [prepare a virtual system](https://github.com/duxsco/gpg-smartcard#prepare-the-system) and install [required dependencies](https://openwrt.org/docs/guide-user/additional-software/imagebuilder#debianubuntu).
+
 ## Official sysupgrade .bin
 
 Flash the official sysupgrade .bin:
@@ -45,6 +49,7 @@ remote $ opkg list-installed | awk '{print $1}' | while read I; do if [ $(opkg w
 ath10k-firmware-qca99x0-ct
 base-files
 busybox
+ca-bundle
 dnsmasq
 dropbear
 ip6tables
@@ -55,24 +60,26 @@ kmod-ath10k-ct
 kmod-gpio-button-hotplug
 kmod-ipt-offload
 kmod-leds-gpio
+kmod-phy-qcom-ipq806x-usb
+kmod-usb-dwc3-qcom
 kmod-usb-ledtrig-usbport
 kmod-usb-ohci
-kmod-usb-phy-qcom-dwc3
 kmod-usb2
 kmod-usb3
 logd
-luci
+luci-ssl
 mtd
 odhcp6c
 odhcpd-ipv6only
 ppp
 ppp-mod-pppoe
+procd
 swconfig
 uboot-envtools
 uci
 urandom-seed
 urngd
-wpad-basic
+wpad-basic-wolfssl
 ```
 
 ## Image Builder sysupgrade .bin w/o modifications
@@ -106,6 +113,7 @@ remote $ opkg list-installed | awk '{print $1}' | while read I; do if [ $(opkg w
 ath10k-firmware-qca99x0-ct
 base-files
 busybox
+ca-bundle
 dnsmasq
 dropbear
 firewall
@@ -116,11 +124,13 @@ kmod-ath10k-ct
 kmod-gpio-button-hotplug
 kmod-ipt-offload
 kmod-leds-gpio
+kmod-phy-qcom-ipq806x-usb
+kmod-usb-dwc3-qcom
 kmod-usb-ledtrig-usbport
 kmod-usb-ohci
-kmod-usb-phy-qcom-dwc3
 kmod-usb2
 kmod-usb3
+libustream-wolfssl20201210
 logd
 mtd
 odhcp6c
@@ -128,12 +138,13 @@ odhcpd-ipv6only
 opkg
 ppp
 ppp-mod-pppoe
+procd
 swconfig
 uboot-envtools
 uci
 urandom-seed
 urngd
-wpad-basic
+wpad-basic-wolfssl
 ```
 
 ## Custom sysupgrade .bin
