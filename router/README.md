@@ -18,21 +18,21 @@ Packages can be installed with `opkg` or over the web interface (aka `luci`) on 
 
 ```bash
 local $ ls -1
-openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin
-openwrt-imagebuilder-19.07.7-ipq806x-generic.Linux-x86_64.tar.xz
+openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin
+openwrt-imagebuilder-21.02.1-ipq806x-generic.Linux-x86_64.tar.xz
 sha256sums
 sha256sums.asc
 ```
 
-Above files are downloaded from [openwrt.org](https://downloads.openwrt.org/releases/19.07.7/targets/ipq806x/generic/).
+Above files are downloaded from [openwrt.org](https://downloads.openwrt.org/releases/21.02.1/targets/ipq806x/generic/).
 
 ## Official sysupgrade .bin
 
 Flash the official sysupgrade .bin:
 
 ```bash
-remote $ sha256sum /tmp/openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin | grep dc715e50d992f9d1e418fff7c7e9dd3707c9dc52730dca50cd3b4c49af15bc26
-remote $ sysupgrade -n -v /tmp/openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin
+remote $ sha256sum /tmp/openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin | grep 34fad9b82c4b0ed29aacbd86c471b9b2329af5fdf1af0ae7ebbd8d162d97aaef
+remote $ sysupgrade -n -v /tmp/openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin
 Commencing upgrade. Closing all shell sessions.
 Connection to 192.168.0.1 closed by remote host.
 Connection to 192.168.0.1 closed.
@@ -80,20 +80,20 @@ wpad-basic
 Use OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder) ...:
 
 ```bash
-local $ tar xvf openwrt-imagebuilder-19.07.7-ipq806x-generic.Linux-x86_64.tar.xz; echo $?
-local $ cd openwrt-imagebuilder-19.07.7-ipq806x-generic.Linux-x86_64/
+local $ tar xvf openwrt-imagebuilder-21.02.1-ipq806x-generic.Linux-x86_64.tar.xz; echo $?
+local $ cd openwrt-imagebuilder-21.02.1-ipq806x-generic.Linux-x86_64/
 local $ make help
 local $ make image PROFILE="tplink_c2600"; echo $?
-local $ scp bin/targets/ipq806x/generic/openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin root@192.168.1.1:/tmp/
-local $ grep "openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin" bin/targets/ipq806x/generic/sha256sums | sed 's#*# /tmp/#' | ssh root@192.168.1.1 "dd of=/tmp/sha256.txt"
+local $ scp bin/targets/ipq806x/generic/openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin root@192.168.1.1:/tmp/
+local $ grep "openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin" bin/targets/ipq806x/generic/sha256sums | sed 's#*# /tmp/#' | ssh root@192.168.1.1 "dd of=/tmp/sha256.txt"
 ```
 
 ..., flash your router:
 
 ```bash
 remote $ sha256sum -c /tmp/sha256.txt
-/tmp/openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin: OK
-remote $ sysupgrade -n -v /tmp/openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin
+/tmp/openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin: OK
+remote $ sysupgrade -n -v /tmp/openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin
 Commencing upgrade. Closing all shell sessions.
 Connection to 192.168.1.1 closed by remote host.
 Connection to 192.168.1.1 closed.
@@ -152,8 +152,8 @@ While building the image with OpenWrt's [Image Builder](https://openwrt.org/docs
 First, extract the Image Builder archive:
 
 ```bash
-local $ tar xvf openwrt-imagebuilder-19.07.7-ipq806x-generic.Linux-x86_64.tar.xz; echo $?
-local $ cd openwrt-imagebuilder-19.07.7-ipq806x-generic.Linux-x86_64/
+local $ tar xvf openwrt-imagebuilder-21.02.1-ipq806x-generic.Linux-x86_64.tar.xz; echo $?
+local $ cd openwrt-imagebuilder-21.02.1-ipq806x-generic.Linux-x86_64/
 local $ make help
 ```
 
@@ -185,16 +185,16 @@ Build and copy the image:
 
 ```bash
 local $ make image PROFILE="tplink_c2600" PACKAGES="$PKG_DEFAULT $PKG_WPA3 $PKG_DNS $PKG_DHCP $PKG_VPN $PKG_GOPASS" FILES="files/"; echo $?
-local $ scp bin/targets/ipq806x/generic/openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin root@192.168.1.1:/tmp/
-local $ grep "openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin" bin/targets/ipq806x/generic/sha256sums | sed 's#*# /tmp/#' | ssh root@192.168.1.1 "dd of=/tmp/sha256.txt"
+local $ scp bin/targets/ipq806x/generic/openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin root@192.168.1.1:/tmp/
+local $ grep "openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin" bin/targets/ipq806x/generic/sha256sums | sed 's#*# /tmp/#' | ssh root@192.168.1.1 "dd of=/tmp/sha256.txt"
 ```
 
 Flash the image:
 
 ```bash
 remote $ sha256sum -c /tmp/sha256.txt
-/tmp/openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin: OK
-remote $ sysupgrade -n -v /tmp/openwrt-19.07.7-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin
+/tmp/openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin: OK
+remote $ sysupgrade -n -v /tmp/openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin
 Commencing upgrade. Closing all shell sessions.
 Connection to 192.168.1.1 closed by remote host.
 Connection to 192.168.1.1 closed.
