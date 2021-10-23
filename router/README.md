@@ -14,7 +14,7 @@
 
 ## Introduction
 
-Packages can be installed with `opkg` or over the web interface (aka `luci`) on devices with large storage capacity. In contrast to my modem setup, I don't have the requirement of keeping the image as small as possible. Nevertheless, I still prefer building my own image with OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder), especially with the requirement of replacing DNSMasq with Unbound and enabling WPA3.
+Packages can be installed with `opkg` or over the web interface (aka `luci`) on devices with large storage capacity. In contrast to my modem setup, I don't have the requirement of keeping the image as small as possible. Nevertheless, I still prefer building my own image with OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder), especially with the requirement of replacing DNSMasq with Unbound and Dropbear with OpenSSH.
 
 ```bash
 local $ ls -1
@@ -153,10 +153,12 @@ wpad-basic-wolfssl
 
 I build my image using the [package list from the official OpenWrt image](#official-sysupgrade-bin) with some customisations:
 
-  - Replace `wpad-basic` with `wpad-openssl` for [WPA3 support](https://openwrt.org/docs/guide-user/network/wifi/basic#encryption_modes).
+  - Use `chrony-nts` instead of the provided NTP service
   - Replace `dnsmasq` with `luci-app-unbound` for DNS. As [dnsmasq also takes care of DHCP over IPv4](https://openwrt.org/docs/guide-user/base-system/dhcp), I need to replace `odhcpd-ipv6only` with `odhcpd` to have DHCP and DHCPv6.
+  - Replace `dropbear` with `openssh-server`
+  - Install tools `diffutils`, `rsync` and `vim-fuller`
   - Install `luci-app-wireguard` for VPN.
-  - Install packages needed to host your gopass/pass Git repos on usb ⇨ raid1 mdadm ⇨ ext4
+  - Install packages needed to host your gopass/pass Git repos on usb ⇨ `btrfs raid1`
 
 While building the image with OpenWrt's [Image Builder](https://openwrt.org/docs/guide-user/additional-software/imagebuilder), you have to explicitly exclude/include packages from the [standard set](#image-builder-sysupgrade-bin-wo-modifications). **I create my image with above customisations as shown in the following code blocks.**
 
@@ -171,19 +173,24 @@ local $ make help
 The following commands need to be executed on the local machine. I removed `local $` to ease copy&paste. You can get some info on a certain package at `https://openwrt.org/packages/pkgdata/<PACKAGE_NAME>` (e.g. https://openwrt.org/packages/pkgdata/urngd) or via [package table](https://openwrt.org/packages/table/start).
 
 ```bash
+PKG_CHRONY="chrony-nts" # use chrony
 PKG_DEFAULT="iwinfo luci" # packages delivered with official image
-PKG_WPA3="-wpad-basic wpad-openssl" # support WPA3
-PKG_DNS="-dnsmasq luci-app-unbound" # use Unbound
 PKG_DHCP="-odhcpd-ipv6only odhcpd" # make odhcpd support DHCPv4, because Dnsmasq doesn't take care of this anymore
+PKG_DNS="-dnsmasq luci-app-unbound" # use Unbound
+PKG_SSH="-dropbear openssh-server" # use openssh
+PKG_TOOLS="diffutils rsync vim-fuller"
 PKG_VPN="luci-app-wireguard" # support WireGuard
-PKG_GOPASS="kmod-usb-storage mdadm kmod-fs-ext4 block-mount blkid usbutils git" # allow storing git files on usb->raid1->ext4 and manage non-root user
+PKG_GOPASS="kmod-usb-storage block-mount blkid btrfs-progs usbutils git" # allow storing git files on usb->raid1->ext4 and manage non-root user
 ```
 
-Furthermore, I integrate following files/folder with these perms into the image:
+Furthermore, I integrate following files/folder with these perms into the image. You need to make sure that the `authorized_keys` file contains your SSH public keys.
 
 ```bash
 local $ find files -exec ls -ld {} + | awk '{print $1"  "$NF}'
 drwxr-xr-x  files
+drwx------  files/root
+drwx------  files/root/.ssh
+-rw-------  files/root/.ssh/authorized_keys
 drwxr-xr-x  files/usr
 drwxr-xr-x  files/usr/local
 drwxr-xr-x  files/usr/local/bin
@@ -195,7 +202,7 @@ drwxr-xr-x  files/usr/local/bin
 Build and copy the image:
 
 ```bash
-local $ make image PROFILE="tplink_c2600" PACKAGES="$PKG_DEFAULT $PKG_WPA3 $PKG_DNS $PKG_DHCP $PKG_VPN $PKG_GOPASS" FILES="files/"; echo $?
+local $ make image PROFILE="tplink_c2600" PACKAGES="$PKG_CHRONY $PKG_DEFAULT $PKG_DHCP $PKG_DNS $PKG_SSH $PKG_TOOLS $PKG_VPN $PKG_GOPASS" FILES="files/"; echo $?
 local $ scp bin/targets/ipq806x/generic/openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin root@192.168.1.1:/tmp/
 local $ grep "openwrt-21.02.1-ipq806x-generic-tplink_c2600-squashfs-sysupgrade.bin" bin/targets/ipq806x/generic/sha256sums | sed 's#*# /tmp/#' | ssh root@192.168.1.1 "dd of=/tmp/sha256.txt"
 ```
@@ -211,7 +218,8 @@ Connection to 192.168.1.1 closed by remote host.
 Connection to 192.168.1.1 closed.
 ```
 
-You need to set a static IP address in the range of 192.168.1.2-192.168.1.254 with netmask 255.255.255.0 on your working machine, because the router doesn't provide DHCP at this point. Login into the router with `ssh root@192.168.1.1`.
+You need to set a static IP address in the range of 192.168.1.2-192.168.1.254 with netmask 255.255.255.0 on your working machine, because the router doesn't provide DHCP at this point.
+Login into the router with `ssh root@192.168.1.1`.
 
 Here is my custom package list without dependencies:
 
@@ -221,41 +229,47 @@ ath10k-firmware-qca99x0-ct
 base-files
 blkid
 block-mount
+btrfs-progs
 busybox
-dropbear
+chrony-nts
+diffutils
 git
 ip6tables
 iwinfo
 kmod-ata-ahci
 kmod-ata-ahci-platform
 kmod-ath10k-ct
-kmod-fs-ext4
 kmod-gpio-button-hotplug
 kmod-ipt-offload
 kmod-leds-gpio
+kmod-phy-qcom-ipq806x-usb
+kmod-usb-dwc3-qcom
 kmod-usb-ledtrig-usbport
 kmod-usb-ohci
-kmod-usb-phy-qcom-dwc3
 kmod-usb-storage
 kmod-usb2
 kmod-usb3
+libustream-wolfssl20201210
 logd
 luci
 luci-app-unbound
 luci-app-wireguard
-mdadm
 mtd
 odhcp6c
 odhcpd
+openssh-server
 ppp
 ppp-mod-pppoe
+procd
+rsync
 swconfig
 uboot-envtools
 uci
 urandom-seed
 urngd
 usbutils
-wpad-openssl
+vim-fuller
+wpad-basic-wolfssl
 ```
 
 ## Basic Configuration
