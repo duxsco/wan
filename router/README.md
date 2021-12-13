@@ -284,6 +284,7 @@ After making changes over the web interface (aka `luci`), click on `Save` and cl
 ### System ⇨ System
 
 ```
+# /etc/config/system
 uci del system.ntp.enable_server
 uci del system.ntp.server
 uci set system.cfg01e48a.hostname='mimo'
@@ -325,6 +326,7 @@ Beware that you will only be able to login via SSH over port 50022 or whatever p
 ### Services ⇨ Recursive DNS
 
 ```
+# /etc/config/unbound
 uci set unbound.ub_main.enabled='1'
 uci set unbound.ub_main.validator='1'
 uci set unbound.ub_main.rebind_localhost='1'
@@ -341,6 +343,7 @@ uci del unbound.ub_main.query_min_strict
 Optional, but [recommended](https://www.kuketz-blog.de/empfehlungsecke/#dns):
 
 ```
+# /etc/config/unbound
 uci del unbound.fwd_google.server
 uci add_list unbound.fwd_google.server='5.1.66.255'
 uci add_list unbound.fwd_google.server='185.150.99.255'
@@ -373,6 +376,7 @@ uci set network.lan.ipaddr='192.168.0.1'
 ### Network ⇨ Interfaces ⇨ WAN
 
 ```
+# /etc/config/network
 uci set network.wan.proto='pppoe'
 uci set network.wan.username='XXX'
 uci set network.wan.password='XXX'
@@ -385,6 +389,7 @@ uci add_list network.wan.dns='127.0.0.1'
 ### Network ⇨ Interfaces ⇨ WAN6
 
 ```
+# /etc/config/network
 uci set network.wan6.reqaddress='try'
 uci set network.wan6.reqprefix='auto'
 uci set network.wan6.peerdns='0'
@@ -394,6 +399,7 @@ uci add_list network.wan6.dns='::1'
 ### Network ⇨ Wireless
 
 ```
+# /etc/config/wireless
 uci set wireless.radio0.htmode='VHT40'
 uci set wireless.radio0.channel='auto'
 uci set wireless.radio0.country='DE'
@@ -441,6 +447,7 @@ remote $ /etc/init.d/ucitrack restart
 Drop invalid packets:
 
 ```bash
+# /etc/config/firewall
 uci del firewall.cfg01e63d.syn_flood
 uci set firewall.cfg01e63d.synflood_protect='1'
 uci set firewall.cfg01e63d.drop_invalid='1'
@@ -512,13 +519,20 @@ Delete extraneous fstab entry:
 remote $ uci del fstab.@mount[1]
 ```
 
+Set `noatime` mount option:
+
+```bash
+remote $ uci set fstab.@mount[0].options="noatime"
+remote $ uci commit fstab.@mount[0]
+```
+
 Create mountpoint, use mountpoint and enable the fstab entry:
 
 ```bash
 remote $ mkdir /mnt/usb
 remote $ uci set fstab.@mount[0].target='/mnt/usb'
 remote $ uci set fstab.@mount[0].enabled='1'
-remote $ uci commit fstab
+remote $ uci commit fstab.@mount[0]
 ```
 
 Reboot your router and check whether the btrfs RAID has been mounted to `/mnt/usb`:
@@ -607,6 +621,7 @@ Disable IPv6:
 The resulting commands:
 
 ```
+# /etc/config/firewall
 uci add firewall zone # =cfg10dc81
 uci set firewall.@zone[-1].name='whitehouse'
 uci set firewall.@zone[-1].input='REJECT'
@@ -630,7 +645,9 @@ uci set firewall.@zone[-1].family='ipv4'
 ![wireguard interface](assets/interface_whitehouse_03.png)
 
 ```
+# /etc/config/firewall
 uci add_list firewall.cfg10dc81.network='whitehouse'
+# /etc/config/network
 uci set network.whitehouse=interface
 uci set network.whitehouse.proto='wireguard'
 uci add network wireguard_whitehouse # =cfg0b9cf3
@@ -654,6 +671,7 @@ uci set network.@wireguard_whitehouse[-1].persistent_keepalive='25'
 ![FW traffic rule certbot](assets/fw_traffic_rule_certbot_01.png)
 
 ```
+# /etc/config/firewall
 uci add firewall rule # =cfg1192bd
 uci set firewall.@rule[-1].name='certbot'
 uci set firewall.@rule[-1].family='ipv4'
@@ -672,6 +690,7 @@ uci set firewall.@rule[-1].extra='-m conntrack --ctstate NEW'
 ![FW traffic rule smtp](assets/fw_traffic_rule_smtp_01.png)
 
 ```
+# /etc/config/firewall
 uci add firewall rule # =cfg1292bd
 uci set firewall.@rule[-1].name='smtp'
 uci set firewall.@rule[-1].family='ipv4'
@@ -690,6 +709,7 @@ uci set firewall.@rule[-1].extra='-m conntrack --ctstate NEW'
 ![FW traffic rule imap](assets/fw_traffic_rule_imap_01.png)
 
 ```
+# /etc/config/firewall
 uci add firewall rule # =cfg1392bd
 uci set firewall.@rule[-1].name='imap'
 uci set firewall.@rule[-1].family='ipv4'
@@ -710,6 +730,7 @@ uci set firewall.@rule[-1].extra='-m conntrack --ctstate NEW'
 ![FW port forwarding certbot](assets/fw_port_forwarding_certbot_01.png)
 
 ```
+# /etc/config/firewall
 uci add firewall redirect # =cfg143837
 uci set firewall.@redirect[-1].target='DNAT'
 uci set firewall.@redirect[-1].name='certbot'
@@ -728,6 +749,7 @@ uci set firewall.@redirect[-1].reflection='0'
 ![FW port forwarding smtp](assets/fw_port_forwarding_smtp_01.png)
 
 ```
+# /etc/config/firewall
 uci add firewall redirect # =cfg153837
 uci set firewall.@redirect[-1].target='DNAT'
 uci set firewall.@redirect[-1].name='smtp'
@@ -746,6 +768,7 @@ uci set firewall.@redirect[-1].reflection='0'
 ![FW port forwarding imap](assets/fw_port_forwarding_imap_01.png)
 
 ```
+# /etc/config/firewall
 uci add firewall redirect # =cfg163837
 uci set firewall.@redirect[-1].target='DNAT'
 uci set firewall.@redirect[-1].name='imap'
@@ -764,6 +787,7 @@ uci set firewall.@redirect[-1].reflection='0'
 ![FW nat certbot](assets/fw_nat_certbot.png)
 
 ```
+# /etc/config/firewall
 uci add firewall nat # =cfg1793c8
 uci set firewall.@nat[-1].name='certbot'
 uci add_list firewall.@nat[-1].proto='tcp'
@@ -778,6 +802,7 @@ uci set firewall.@nat[-1].snat_ip='192.168.0.1'
 ![FW nat smtp](assets/fw_nat_smtp.png)
 
 ```
+# /etc/config/firewall
 uci add firewall nat # =cfg1893c8
 uci set firewall.@nat[-1].name='smtp'
 uci add_list firewall.@nat[-1].proto='tcp'
@@ -792,6 +817,7 @@ uci set firewall.@nat[-1].snat_ip='192.168.0.1'
 ![FW nat imap](assets/fw_nat_imap.png)
 
 ```
+# /etc/config/firewall
 uci add firewall nat # =cfg1993c8
 uci set firewall.@nat[-1].name='imap'
 uci add_list firewall.@nat[-1].proto='tcp'
@@ -809,19 +835,33 @@ Don't forget to set the IP of the vServer:
 
 ```
 # make mail server accessible to lan in case of internet downtime
-iptables -t nat -A zone_lan_prerouting -s 192.168.0.0/24 -d <PUBLIC STATIC IP OF VSERVER> -p tcp -m multiport --dports 50587,50993 -j DNAT --to-destination 192.168.0.2 -m comment --comment "mail reflection"
-iptables -t nat -A zone_lan_postrouting -s 192.168.0.0/24 -d 192.168.0.2 -p tcp -m multiport --dports 50587,50993 -j SNAT --to 192.168.0.1 -m comment --comment "mail reflection"
+iptables -t nat -A prerouting_lan_rule -d <PUBLIC STATIC IP OF VSERVER> -p tcp -m multiport --dports 50587,50993 -j DNAT --to-destination 192.168.0.2 -m comment --comment "mail reflection"
+iptables -t nat -A postrouting_lan_rule -d 192.168.0.2 -p tcp -m multiport --dports 50587,50993 -j SNAT --to-source 192.168.0.1 -m comment --comment "mail reflection"
 ```
+
+#### Network ⇨ Hostnames
+
+Add an entry for the public static IP address of the vServer. Otherwise, the two iptables rules in [this chapter](#network--firewall--custom-rules-reflection) won't work.
 
 ### Guest Wifi for Smart-TV
 
 I like to have my Smart-TV in a guest Wifi, separated from my LAN.
+
+#### Network ⇨ Interfaces ⇨ Devices
+
+```
+# /etc/config/network
+uci add network device # =cfg0c0f15
+uci set network.@device[-1].type='bridge'
+uci set network.@device[-1].name='br-tv'
+```
 
 #### Network ⇨ Firewall ⇨ "General Settings"
 
 Frist, I create a firewall zone as shown in [Network ⇨ Firewall ⇨ "General Settings"](#network--firewall--general-settings-1). Just replace "whitehouse" with "tv", don't disable IPv6 and allow ingoing traffic:
 
 ```
+# /etc/config/firewall
 uci add firewall zone # =cfg1adc81
 uci set firewall.@zone[-1].name='tv'
 uci set firewall.@zone[-1].input='ACCEPT'
@@ -845,22 +885,30 @@ Create the `tv` interface:
 
 ![tv interface](assets/interface_tv_05.png)
 
+![tv interface](assets/interface_tv_06.png)
+
+![tv interface](assets/interface_tv_07.png)
+
 ```
+# /etc/config/dhcp
 uci set dhcp.tv=dhcp
 uci set dhcp.tv.interface='tv'
 uci set dhcp.tv.start='100'
 uci set dhcp.tv.limit='150'
 uci set dhcp.tv.leasetime='12h'
 uci set dhcp.tv.ra='server'
-uci set dhcp.tv.dhcpv6='server'
 uci add_list dhcp.tv.ra_flags='managed-config'
 uci add_list dhcp.tv.ra_flags='other-config'
-uci set network.tv.ip6assign='60'
+uci set dhcp.tv.dhcpv6='server'
+# /etc/config/firewall
 uci add_list firewall.cfg1adc81.network='tv'
+# /etc/config/network
 uci set network.tv=interface
 uci set network.tv.proto='static'
+uci set network.tv.device='br-tv'
 uci set network.tv.ipaddr='192.168.1.1'
 uci set network.tv.netmask='255.255.255.0'
+uci set network.tv.ip6assign='60'
 ```
 
 Connect to the router via SSH and enable DHCPv4:
@@ -876,6 +924,9 @@ remote $ /etc/init.d/odhcpd restart
 The wireless network needs to be created:
 
 ```
+# /etc/config/network
+uci set network.tv.type='bridge'
+# /etc/config/wireless
 uci set wireless.wifinet2=wifi-iface
 uci set wireless.wifinet2.device='radio0'
 uci set wireless.wifinet2.mode='ap'
@@ -899,6 +950,7 @@ uci set wireless.wifinet3.network='tv'
 Finally, I allow traffic to be forwarded from `tv` zone to `wan` zone. For this purpose, edit `tv` zone and set `wan` at `Allow forward to destination zones:`.
 
 ```
+# /etc/config/firewall
 uci add firewall forwarding # =cfg1bad58
 uci set firewall.@forwarding[-1].src='tv'
 uci set firewall.@forwarding[-1].dest='wan'
@@ -915,7 +967,8 @@ We need to assign "LAN1" port to a separate VLAN which has port number 3 in belo
 ![cam switch](assets/switch.png)
 
 ```
-uci add network switch_vlan # =cfg0d1ec7
+# /etc/config/network
+uci add network switch_vlan # =cfg0e1ec7
 uci set network.@switch_vlan[-1].device='switch0'
 uci set network.@switch_vlan[-1].vlan='3'
 uci set network.cfg081ec7.vid='1'
@@ -931,6 +984,7 @@ uci set network.@switch_vlan[-1].vid='3'
 A firewall zone as shown in [Network ⇨ Firewall ⇨ "General Settings"](#network--firewall--general-settings-1) needs to be created. Just replace "whitehouse" with "cam", don't disable IPv6 and allow ingoing traffic:
 
 ```
+# /etc/config/firewall
 uci add firewall zone # =cfg1cdc81
 uci set firewall.@zone[-1].name='cam'
 uci set firewall.@zone[-1].input='ACCEPT'
@@ -940,25 +994,28 @@ uci set firewall.@zone[-1].forward='REJECT'
 
 #### Network ⇨ Interfaces
 
-Create the `cam` interface as shown in [Network ⇨ Interfaces](#network--interfaces-1). But, change the IP address and assign the "LAN1" port to the bridge.
+Create the `cam` interface as shown in [Network ⇨ Interfaces](#network--interfaces-1). But, change the IP address and assign the interface to device `eth1.3`.
 
 ```
+# /etc/config/dhcp
 uci set dhcp.cam=dhcp
 uci set dhcp.cam.interface='cam'
 uci set dhcp.cam.start='100'
 uci set dhcp.cam.limit='150'
 uci set dhcp.cam.leasetime='12h'
 uci set dhcp.cam.ra='server'
-uci set dhcp.cam.dhcpv6='server'
 uci add_list dhcp.cam.ra_flags='managed-config'
 uci add_list dhcp.cam.ra_flags='other-config'
-uci set network.cam.ip6assign='60'
+uci set dhcp.cam.dhcpv6='server'
+# /etc/config/firewall
 uci add_list firewall.cfg1cdc81.network='cam'
+# /etc/config/network
 uci set network.cam=interface
 uci set network.cam.proto='static'
 uci set network.cam.device='eth1.3'
 uci set network.cam.ipaddr='192.168.2.1'
 uci set network.cam.netmask='255.255.255.0'
+uci set network.cam.ip6assign='60'
 ```
 
 Connect to the router via SSH and enable DHCPv4:
@@ -974,6 +1031,7 @@ remote $ /etc/init.d/odhcpd restart
 Finally, I allow traffic to be forwarded from `cam` zone to `wan` zone. For this purpose, edit `cam` zone and set `wan` at `Allow forward to destination zones:`.
 
 ```
+# /etc/config/firewall
 uci add firewall forwarding # =cfg1dad58
 uci set firewall.@forwarding[-1].src='cam'
 uci set firewall.@forwarding[-1].dest='wan'
