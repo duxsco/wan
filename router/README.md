@@ -154,9 +154,9 @@ wpad-basic-wolfssl
 I build my image using the [package list from the official OpenWrt image](#official-sysupgrade-bin) with some customisations:
 
   - Use `chrony-nts` instead of the provided NTP service
-  - Replace `dnsmasq` with `luci-app-unbound` for DNS. As [dnsmasq also takes care of DHCP over IPv4](https://openwrt.org/docs/guide-user/base-system/dhcp), I need to replace `odhcpd-ipv6only` with `odhcpd` to have DHCP and DHCPv6.
+  - Replace `dnsmasq` with `luci-app-unbound` to have a validating, recursive, caching DNS resolver. As [dnsmasq also takes care of DHCP over IPv4](https://openwrt.org/docs/guide-user/base-system/dhcp), I need to replace `odhcpd-ipv6only` with `odhcpd` to have DHCPv6 as well as DHCP served.
   - Replace `dropbear` with `openssh-server`
-  - Install tools `diffutils`, `rsync` and `vim-fuller`
+  - Install tools `diffutils`, `fdisk`, `rsync` and `vim-fuller`
   - Install `luci-app-wireguard` for VPN.
   - Install packages needed to host your gopass/pass Git repos on usb ⇨ `btrfs raid1`
 
@@ -178,7 +178,7 @@ PKG_DEFAULT="iwinfo luci" # packages delivered with official image
 PKG_DHCP="-odhcpd-ipv6only odhcpd" # make odhcpd support DHCPv4, because Dnsmasq doesn't take care of this anymore
 PKG_DNS="-dnsmasq luci-app-unbound" # use Unbound
 PKG_SSH="-dropbear openssh-server" # use openssh
-PKG_TOOLS="diffutils rsync vim-fuller"
+PKG_TOOLS="diffutils fdisk rsync vim-fuller"
 PKG_VPN="luci-app-wireguard" # support WireGuard
 PKG_GOPASS="kmod-usb-storage block-mount blkid btrfs-progs usbutils git" # allow storing git files on usb->raid1->ext4 and manage non-root user
 ```
@@ -234,6 +234,7 @@ btrfs-progs
 busybox
 chrony-nts
 diffutils
+fdisk
 git
 ip6tables
 iwinfo
@@ -849,6 +850,8 @@ I like to have my Smart-TV in a guest Wifi, separated from my LAN.
 
 #### Network ⇨ Interfaces ⇨ Devices
 
+First, create a bridge device. Otherwise, you'll have [problems with DHCP and DNS](https://forum.openwrt.org/t/master-guest-network-not-working-dhcp-packet-received-on-wlan0-which-has-no-address/74138).
+
 ```
 # /etc/config/network
 uci add network device # =cfg0c0f15
@@ -858,7 +861,7 @@ uci set network.@device[-1].name='br-tv'
 
 #### Network ⇨ Firewall ⇨ "General Settings"
 
-Frist, I create a firewall zone as shown in [Network ⇨ Firewall ⇨ "General Settings"](#network--firewall--general-settings-1). Just replace "whitehouse" with "tv", don't disable IPv6 and allow ingoing traffic:
+Create a firewall zone as shown in [Network ⇨ Firewall ⇨ "General Settings"](#network--firewall--general-settings-1). Just replace "whitehouse" with "tv", don't disable IPv6 and allow ingoing traffic:
 
 ```
 # /etc/config/firewall
