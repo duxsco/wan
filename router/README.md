@@ -475,6 +475,76 @@ uci commit uhttpd && \
 
 To access `luci` execute `ssh -NL 8080:localhost:80 -p 50022 root@192.168.0.1` and visit http://localhost:8080
 
+### Chrony
+
+Chrony cannot be configured via luci. Thus, you need to use `uci`. The default config:
+
+```bash
+remote $ uci show chrony
+chrony.@pool[0]=pool
+chrony.@pool[0].hostname='2.openwrt.pool.ntp.org'
+chrony.@pool[0].maxpoll='12'
+chrony.@pool[0].iburst='yes'
+chrony.@dhcp_ntp_server[0]=dhcp_ntp_server
+chrony.@dhcp_ntp_server[0].iburst='yes'
+chrony.@dhcp_ntp_server[0].disabled='no'
+chrony.@allow[0]=allow
+chrony.@allow[0].interface='lan'
+chrony.@makestep[0]=makestep
+chrony.@makestep[0].threshold='1.0'
+chrony.@makestep[0].limit='3'
+chrony.@nts[0]=nts
+chrony.@nts[0].rtccheck='yes'
+chrony.@nts[0].systemcerts='yes'
+```
+
+My changes:
+
+```bash
+uci set chrony.@nts[-1].trustedcerts='/etc/ssl/certs/ca-certificates.crt'
+uci delete chrony.@pool[0]
+uci add chrony server
+uci set chrony.@server[-1].hostname='time.cloudflare.com'
+uci set chrony.@server[-1].iburst='yes'
+uci set chrony.@server[-1].nts='yes'
+uci add chrony server
+uci set chrony.@server[-1].hostname='nts.netnod.se'
+uci set chrony.@server[-1].iburst='yes'
+uci set chrony.@server[-1].nts='yes'
+uci add chrony server
+uci set chrony.@server[-1].hostname='nts.time.nl'
+uci set chrony.@server[-1].iburst='yes'
+uci set chrony.@server[-1].nts='yes'
+uci add chrony server
+uci set chrony.@server[-1].hostname='ptbtime1.ptb.de'
+uci set chrony.@server[-1].iburst='yes'
+uci set chrony.@server[-1].nts='yes'
+uci add chrony server
+uci set chrony.@server[-1].hostname='ptbtime2.ptb.de'
+uci set chrony.@server[-1].iburst='yes'
+uci set chrony.@server[-1].nts='yes'
+uci add chrony server
+uci set chrony.@server[-1].hostname='ptbtime3.ptb.de'
+uci set chrony.@server[-1].iburst='yes'
+uci set chrony.@server[-1].nts='yes'
+uci commit chrony
+/etc/init.d/chronyd restart
+```
+
+List the servers:
+
+```bash
+remote $ chronyc sources
+MS Name/IP address         Stratum Poll Reach LastRx Last sample
+===============================================================================
+^* time.cloudflare.com           3   6    17    63   -279us[ -107us] +/-   13ms
+^+ ntsts.sth.ntp.se              2   6    17    64   +864us[+1036us] +/-   16ms
+^+ nts1.time.nl                  2   6    17    63  -3369us[-3197us] +/-   35ms
+^+ ptbtime1.ptb.de               1   6    17    63   -558us[ -385us] +/-   16ms
+^+ ptbtime2.ptb.de               1   6    17    63  +2170us[+2342us] +/-   13ms
+^+ ptbtime3.ptb.de               1   6    17    63   -852us[ -679us] +/-   16ms
+```
+
 ### gopass/pass
 
 Adjust `/dev/sda1` and `/dev/sdb1` as you see fit. If the btrfs RAID has not been assembled, do:
