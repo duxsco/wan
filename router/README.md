@@ -477,7 +477,7 @@ To access `luci` execute `ssh -NL 8080:localhost:80 -p 50022 root@192.168.0.1` a
 
 ### Chrony
 
-Chrony cannot be configured via luci. Thus, you need to use `uci`. The default config:
+Chrony cannot be configured via `luci`. Thus, you need to use `uci`. The default config:
 
 ```bash
 remote $ uci show chrony

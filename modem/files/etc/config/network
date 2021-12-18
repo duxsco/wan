@@ -1,44 +1,41 @@
 config interface 'loopback'
-	option ifname 'lo'
+	option device 'lo'
 	option proto 'static'
 	option ipaddr '127.0.0.1'
 	option netmask '255.0.0.0'
 
+# Copy the ULA prefix from your modem's
+# /etc/config/network running OpenWrt.
+config globals 'globals'
+	option ula_prefix 'XXXX:XXXX:XXXX::/48' # CHANGE ME! CHANGE ME! CHANGE ME!
+
 config dsl 'dsl'
+	option ds_snr_offset '0'
 	# Annex J is required for VDSL
 	option annex 'j'
 	option firmware '/lib/firmware/vr9-B-dsl.bin'
 
-config interface 'lan'
-	option ifname 'eth0.1'
-	option proto 'static'
-	option ipaddr '192.168.1.1'
-	option netmask '255.255.255.0'
-
 # Set the correct MAC address. You can copy the MAC address from
 # your modem's /etc/config/network running OpenWrt.
-config device 'lan_eth0_1_dev'
+config device
 	option name 'eth0.1'
 	option macaddr 'XX:XX:XX:XX:XX:XX' # CHANGE ME! CHANGE ME! CHANGE ME!
 
-# We are passing the signal coming into the "DSL" port through
-# to a dedicated ethernet port which is "LAN1" in case of
-# AVM Fritzbox 3370 with below "switch_vlan" settings.
-# The WAN port of your upstream gateway router is connected
-# to this dedicated ethernet port and takes care of PPPoE.
-# Your LAN, where you access your modem via SSH, is separated
-# from the bridged ethernet port via VLAN.
-config interface 'wan'
-	option type 'bridge'
-	# You need VLAN "7" for VDSL
-	option ifname 'dsl0.7 eth0.7'
-	option proto 'none'
+config interface 'lan'
+	option proto 'static'
+	option ipaddr '192.168.1.1'
+	option netmask '255.255.255.0'
+	option device 'eth0.1'
 
 # Set the correct MAC address. You can copy the MAC address from
 # your modem's /etc/config/network running OpenWrt.
-config device 'wan_dsl0_dev'
+config device
 	option name 'dsl0'
 	option macaddr 'XX:XX:XX:XX:XX:XX' # CHANGE ME! CHANGE ME! CHANGE ME!
+
+config interface 'wan'
+	option proto 'none'
+	option device 'br-wan'
 
 config switch
 	option name 'switch0'
@@ -48,8 +45,8 @@ config switch
 config switch_vlan
 	option device 'switch0'
 	option vlan '1'
-	option ports '0 1 2 6t'
 	option vid '1'
+	option ports '0 1 2 6t'
 
 config switch_vlan
 	option device 'switch0'
@@ -58,3 +55,17 @@ config switch_vlan
 	# "4" somehow stands for "LAN1" on AVM Fritzbox 3370.
 	option ports '4 6t'
 	option vid '7'
+
+# We are passing the signal coming into the "DSL" port through
+# to a dedicated ethernet port which is "LAN1" in case of
+# AVM Fritzbox 3370 with below "device" settings.
+# The WAN port of your upstream gateway router is connected
+# to this dedicated ethernet port and takes care of PPPoE.
+# Your LAN, where you access your modem via SSH, is separated
+# from the bridged ethernet port via VLAN.
+config device
+	option type 'bridge'
+	option name 'br-wan'
+	# You need VLAN "7" for VDSL
+	list ports 'eth0.7'
+	list ports 'dsl0.7'
