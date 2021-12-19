@@ -294,7 +294,7 @@ While building the image with OpenWrt's [Image Builder](https://openwrt.org/docs
 local $ tar xvf openwrt-imagebuilder-21.02.1-lantiq-xrx200.Linux-x86_64.tar.xz; echo $?
 local $ cd openwrt-imagebuilder-21.02.1-lantiq-xrx200.Linux-x86_64/
 local $ make help
-local $ make image PROFILE="avm_fritz3370-rev2-hynix" PACKAGES="-dnsmasq -dsl-vrx200-firmware-xdsl-a -dsl-vrx200-firmware-xdsl-b-patch -firewall -ip6tables -iptables -iwinfo -kmod-ath9k -kmod-gpio-button-hotplug -kmod-ipt-offload -kmod-leds-gpio -kmod-ltq-atm-vr9 -kmod-ltq-deu-vr9 -kmod-usb-dwc2 -ltq-vdsl-vr9-vectoring-fw-installer -odhcp6c -odhcpd-ipv6only -ppp -ppp-mod-pppoa -ppp-mod-pppoe -wpad-basic" FILES="files/"; echo $?
+local $ make image PROFILE="avm_fritz3370-rev2-hynix" PACKAGES="-dnsmasq -dsl-vrx200-firmware-xdsl-a -dsl-vrx200-firmware-xdsl-b-patch -firewall -ip6tables -iptables -iwinfo -kmod-ath9k -kmod-gpio-button-hotplug -kmod-ipt-offload -kmod-leds-gpio -kmod-ltq-atm-vr9 -kmod-ltq-deu-vr9 -kmod-usb-dwc2 -ltq-vdsl-vr9-vectoring-fw-installer -odhcp6c -odhcpd-ipv6only -ppp -ppp-mod-pppoa -ppp-mod-pppoe -wpad-basic-wolfssl" FILES="files/"; echo $?
 local $ scp bin/targets/lantiq/xrx200/openwrt-21.02.1-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin root@192.168.1.1:/tmp/
 local $ grep "openwrt-21.02.1-lantiq-xrx200-avm_fritz3370-rev2-hynix-squashfs-sysupgrade.bin" bin/targets/lantiq/xrx200/sha256sums | sed 's#*# /tmp/#' | ssh root@192.168.1.1 "dd of=/tmp/sha256.txt"
 ```
@@ -321,7 +321,8 @@ Changing password for root
 New password:
 Retype password:
 passwd: password for root changed by root
-remote $ sed -i "s/option ttylogin.*/option ttylogin '1'/" /etc/config/system # to enforce prompt for root password over serial port
+remote $ uci set system.@system[0].ttylogin='1' # to enforce prompt for root password over serial port
+remote $ uci commit system.@system[0].ttylogin
 ```
 
 And, here is my bare minimum package list without dependencies:
@@ -330,14 +331,17 @@ And, here is my bare minimum package list without dependencies:
 remote $ opkg list-installed | awk '{print $1}' | while read I; do if [ $(opkg whatdepends "$I" | wc -l) -eq 3 ]; then echo "$I"; fi; done
 base-files
 busybox
+ca-bundle
 dropbear
 fritz-tffs
 kmod-ltq-ptm-vr9
 kmod-ltq-vdsl-vr9
+libustream-wolfssl20201210
 logd
 ltq-vdsl-app
 mtd
 opkg
+procd
 swconfig
 uci
 urandom-seed
