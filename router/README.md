@@ -314,8 +314,8 @@ remote $ cat <<EOF >> /etc/ssh/sshd_config
 
 KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org
 HostKeyAlgorithms ssh-ed25519
-Ciphers chacha20-poly1305@openssh.com,aes128-gcm@openssh.com,aes256-gcm@openssh.com
-MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
 
 AllowUsers root
 EOF
@@ -504,18 +504,6 @@ My changes:
 uci set chrony.@nts[-1].trustedcerts='/etc/ssl/certs/ca-certificates.crt'
 uci delete chrony.@pool[0]
 uci add chrony server
-uci set chrony.@server[-1].hostname='time.cloudflare.com'
-uci set chrony.@server[-1].iburst='yes'
-uci set chrony.@server[-1].nts='yes'
-uci add chrony server
-uci set chrony.@server[-1].hostname='nts.netnod.se'
-uci set chrony.@server[-1].iburst='yes'
-uci set chrony.@server[-1].nts='yes'
-uci add chrony server
-uci set chrony.@server[-1].hostname='nts.time.nl'
-uci set chrony.@server[-1].iburst='yes'
-uci set chrony.@server[-1].nts='yes'
-uci add chrony server
 uci set chrony.@server[-1].hostname='ptbtime1.ptb.de'
 uci set chrony.@server[-1].iburst='yes'
 uci set chrony.@server[-1].nts='yes'
@@ -525,6 +513,14 @@ uci set chrony.@server[-1].iburst='yes'
 uci set chrony.@server[-1].nts='yes'
 uci add chrony server
 uci set chrony.@server[-1].hostname='ptbtime3.ptb.de'
+uci set chrony.@server[-1].iburst='yes'
+uci set chrony.@server[-1].nts='yes'
+uci add chrony server
+uci set chrony.@server[-1].hostname='nts1.adopo.net'
+uci set chrony.@server[-1].iburst='yes'
+uci set chrony.@server[-1].nts='yes'
+uci add chrony server
+uci set chrony.@server[-1].hostname='www.jabber-germany.de'
 uci set chrony.@server[-1].iburst='yes'
 uci set chrony.@server[-1].nts='yes'
 uci commit chrony
