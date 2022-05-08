@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Prevent tainting variables via environment
+# See: https://gist.github.com/duxsco/fad211d5828e09d0391f018834f955c9
+unset wan_ip wan_net wg_mimo_ip_local wg_mimo_ip_remote wg_mimo_net
+
 wan_net="eth0"; wan_ip="xxx.xxx.xxx.xxx"
 wg_mimo_net="mimo"; wg_mimo_ip_local="172.16.0.1"; wg_mimo_ip_remote="172.16.0.2"
 
