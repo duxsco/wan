@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 wan_net="eth0"; wan_ip="xxx.xxx.xxx.xxx"
 wg_mimo_net="mimo"; wg_mimo_ip_local="172.16.0.1"; wg_mimo_ip_remote="172.16.0.2"
