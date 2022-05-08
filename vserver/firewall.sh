@@ -1,7 +1,7 @@
 #!/bin/bash
 
-WAN_NET="eth0"; WAN_IP="xxx.xxx.xxx.xxx"
-WG_MIMO_NET="mimo"; WG_MIMO_IP_LOCAL="172.16.0.1"; WG_MIMO_IP_REMOTE="172.16.0.2"
+wan_net="eth0"; wan_ip="xxx.xxx.xxx.xxx"
+wg_mimo_net="mimo"; wg_mimo_ip_local="172.16.0.1"; wg_mimo_ip_remote="172.16.0.2"
 
 iptables -F
 iptables -X
@@ -47,6 +47,6 @@ iptables -A INPUT -p udp --dport 51820 -m state --state NEW -j ACCEPT
 ip6tables -A INPUT -p udp --dport 51820 -m state --state NEW -j ACCEPT
 
 # mimo - mail
-iptables -t nat -A PREROUTING  -i "${WAN_NET}"                     -d "${WAN_IP}"            -p tcp -m multiport --dports 80,50587,50993 -j DNAT   --to-destination "${WG_MIMO_IP_REMOTE}"
-iptables        -A FORWARD     -i "${WAN_NET}" -o "${WG_MIMO_NET}" -d "${WG_MIMO_IP_REMOTE}" -p tcp -m multiport --dports 80,50587,50993 -j ACCEPT -m state --state NEW
-iptables -t nat -A POSTROUTING                 -o "${WG_MIMO_NET}" -d "${WG_MIMO_IP_REMOTE}" -p tcp -m multiport --dports 80,50587,50993 -j SNAT   --to-source "${WG_MIMO_IP_LOCAL}"
+iptables -t nat -A PREROUTING  -i "${wan_net}"                     -d "${wan_ip}"            -p tcp -m multiport --dports 80,50587,50993 -j DNAT   --to-destination "${wg_mimo_ip_remote}"
+iptables        -A FORWARD     -i "${wan_net}" -o "${wg_mimo_net}" -d "${wg_mimo_ip_remote}" -p tcp -m multiport --dports 80,50587,50993 -j ACCEPT -m state --state NEW
+iptables -t nat -A POSTROUTING                 -o "${wg_mimo_net}" -d "${wg_mimo_ip_remote}" -p tcp -m multiport --dports 80,50587,50993 -j SNAT   --to-source "${wg_mimo_ip_local}"
