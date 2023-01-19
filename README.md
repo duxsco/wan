@@ -1,5 +1,7 @@
 # My setup to get internet access
 
+> ️⚠️ You can find information on my GnuPG public key in my [GitHub profile README](https://github.com/duxsco/)! ⚠️
+
 I have the following hardware in use:
 
   - [AVM Fritzbox 3370 with "Hynix" NAND flash memory](https://openwrt.org/toh/avm/fritz.box.wlan.3370) as a plain stupid VDSL modem
