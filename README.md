@@ -1,6 +1,17 @@
 # My setup to get internet access
 
-> ️⚠️ You can find information on my GnuPG public key in my [GitHub profile README](https://github.com/duxsco/)! ⚠️
+```
+  _______________________________
+/ This repo has been archived!    \
+| Its successor is at:            |
+\ https://codeberg.org/duxsco/wan /
+  -------------------------------
+         \   ^__^
+          \  (oo)\_______
+             (__)\       )\/\
+                 ||----w |
+                 ||     ||
+```
 
 I have the following hardware in use:
 
